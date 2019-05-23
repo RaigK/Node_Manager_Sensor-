@@ -38,10 +38,10 @@ NodeManager. Just uncomment the settings you need and the sensors you want to ad
 
  // General settings
 
-#define SKETCH_NAME "Temperature Sensor"
+#define SKETCH_NAME "Sensor Relay Timer"
 #define SKETCH_VERSION "1.0"
 #define MY_DEBUG
-#define MY_NODE_ID 120
+#define MY_NODE_ID 122
 
 
 // RFM69 radio settings
@@ -91,20 +91,16 @@ NodeManager. Just uncomment the settings you need and the sensors you want to ad
 //#define MY_PARENT_NODE_ID 0
 //#define MY_PARENT_NODE_IS_STATIC
 
-//#define USE_BATTERY
-//#define USE_SIGNAL
-//#define USE_CONFIGURATION
-//#define USE_SHT21
-//#define USE_INTERRUPT
+
  /***********************************
   * NodeManager configuration
   */
 
 #define NODEMANAGER_DEBUG ON
-#define NODEMANAGER_INTERRUPTS OFF
+#define NODEMANAGER_INTERRUPTS ON
 #define NODEMANAGER_SLEEP ON
-#define NODEMANAGER_RECEIVE OFF
-#define NODEMANAGER_DEBUG_VERBOSE ON
+#define NODEMANAGER_RECEIVE ON
+#define NODEMANAGER_DEBUG_VERBOSE OFF
 #define NODEMANAGER_POWER_MANAGER OFF
 #define NODEMANAGER_CONDITIONAL_REPORT ON
 #define NODEMANAGER_EEPROM ON
@@ -115,6 +111,12 @@ NodeManager. Just uncomment the settings you need and the sensors you want to ad
 #define NODEMANAGER_OTA_CONFIGURATION OFF
 #define NODEMANAGER_SERIAL_INPUT OFF
 
+#define RELAY_1  4  // Arduino Digital I/O pin number for first relay (second on pin+1 etc)
+#define RELAY_2  5  // Arduino Digital I/O pin number for first relay (second on pin+1 etc)
+//#define RELAY_1  4  // Arduino Digital I/O pin number for first relay (second on pin+1 etc)
+//#define RELAY_2  5  // Arduino Digital I/O pin number for first relay (second on pin+1 etc)
+//#define RELAY_3  8  // Arduino Digital I/O pin number for first relay (second on pin+1 etc)
+enum BUTTON_F { contact1 = 6, contact2 = 7, key_close = A0, key_open = A1, key_aux = A2 };
 // import NodeManager library (a nodeManager object will be then made available)
 #include <MySensors_NodeManager.h>
 NodeManager node;
@@ -143,6 +145,8 @@ NodeManager node;
 #include <sensors/SensorSHT21.h>
 SensorSHT21 sht21;
 
+#include <sensors/SensorRelayTimer.h>
+SensorRelayTimer relay1(RELAY_1);
 
  /***********************************
   * Main Sketch
@@ -177,7 +181,8 @@ void before() {
  // battery sensor
 	 battery.setMinVoltage(2.0);
 	 battery.setMaxVoltage(3.2);
-
+	 relay1.setButtonPin(key_open);
+	 
 	 //battery.children.get(1)->setDescription("Alkaline");
 	 
 	 // call NodeManager before rutine
